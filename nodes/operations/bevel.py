@@ -110,23 +110,31 @@ class BevelNode(CadQueryNode):
         # Применяем фаску или скругление
         try:
             result_shape = None
-            if segments == 1:
-                # Chamfer
-                logger.debug(f"Applying chamfer with distance {amount} to {len(edge_list)} edge(s).")
-                result_shape = shape_in.chamfer(amount, amount, edge_list)
+            if edge_list: # Применяем только если есть ребра
+                if segments == 1:
+                    # Chamfer
+                    logger.debug(f"Applying chamfer with distance {amount} to edge(s): {edge_list}")
+                    result_shape = shape_in.chamfer(amount, amount, edge_list)
+                else:
+                    # Fillet
+                    logger.debug(f"Applying fillet with radius {amount} to edge(s): {edge_list}")
+                    result_shape = shape_in.fillet(amount, edge_list)
             else:
-                logger.debug(f"Applying fillet with radius {amount} to edge(s): {edge_list}")
-                result_shape = shape_in.fillet(amount, edge_list)
+                # Если ребер для обработки не было, возвращаем исходную форму
+                result_shape = shape_in
 
             if result_shape is None or not result_shape.isValid():
+                 # Проверка нужна, даже если edge_list был пуст, т.к. shape_in мог быть невалидным
                  raise NodeProcessingError(self, "Bevel operation resulted in an invalid shape.")
 
             # Возвращаем результат как Shape (или обернуть в Workplane?)
             # Возвращаем Shape, чтобы не терять контекст, если вход был Shape
-            out_socket.sv_set(result_shape)
+            result_wp = cq.Workplane("XY").add(result_shape)
+            out_socket.sv_set(result_wp) 
             logger.debug(f"Node {self.name}: Bevel operation successful.")
 
         except Exception as e:
+             logger.error(f"CadQuery bevel operation failed: {e}", exc_info=True)
              raise NodeProcessingError(self, f"Bevel operation failed: {e}")
 
 
