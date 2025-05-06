@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__) # <--- Добавить эту строку
 # --- Node Categories ---
 # Сопоставление категорий с классами нод (заполняется при регистрации нод)
 node_categories = {
+    "Arrays": [],
     "Primitives": [],
     "Operations": [],
     "Transformations": [],

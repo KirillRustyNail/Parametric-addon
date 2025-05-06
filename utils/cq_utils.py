@@ -5,7 +5,8 @@ from ..dependencies import cq, cadquery_available
 
 logger = logging.getLogger(__name__)
 
-def shape_to_blender_mesh(shape: cq.Shape, mesh_name: str) -> bpy.types.Mesh | None:
+def shape_to_blender_mesh(shape: cq.Shape, mesh_name: str,
+                          tolerance=0.1, angular_tolerance=0.1) -> bpy.types.Mesh | None: # Добавляем параметры
     """Converts a CadQuery Shape to a Blender Mesh using tessellation."""
     if not cadquery_available:
         logger.error("CadQuery library not available for shape conversion.")
@@ -20,7 +21,7 @@ def shape_to_blender_mesh(shape: cq.Shape, mesh_name: str) -> bpy.types.Mesh | N
     try:
         # Используем tessellate для получения вершин и треугольников
         # Настройте точность по необходимости
-        vertices, triangles = shape.tessellate(tolerance=0.1, angularTolerance=0.1)
+        vertices, triangles = shape.tessellate(tolerance=tolerance, angularTolerance=angular_tolerance)
 
         if not vertices or not triangles:
             logger.warning(f"Tessellation resulted in no vertices or triangles for mesh '{mesh_name}'. Shape might be 2D or invalid.")

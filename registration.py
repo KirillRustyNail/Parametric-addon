@@ -26,6 +26,7 @@ operators_modules_order = [
 ui_modules_order = [
     ".operators.node_ops",
     ".operators.io_json",
+    ".operators.process_mesh",
     ".ui.menus",
     ".ui.panels", 
 ]
