@@ -62,11 +62,16 @@ class CQViewerNode(CadQueryNode):
         layout.separator()
         col_ops = layout.column(align=True)
         col_ops.label(text="Mesh Ops:")
-        can_process = self.target_object_name and self.target_object_name in bpy.data.objects
-        row_merge = col_ops.row(align=True); row_merge.enabled = can_process
+        
+        can_process = bool(self.target_object_name and self.target_object_name in bpy.data.objects)
+
+        row_merge = col_ops.row(align=True)
+        row_merge.enabled = can_process
         op_merge = row_merge.operator("cqp.process_mesh_op", text="Merge by Distance", icon='AUTOMERGE_ON')
-        op_merge.node_path = self.get_path(); op_merge.operation = 'MERGE'
-        row_quads = col_ops.row(align=True); row_quads.enabled = can_process
+        op_merge.node_path = self.get_path()
+        op_merge.operation = 'MERGE'
+        row_quads = col_ops.row(align=True)
+        row_quads.enabled = can_process
         op_quads = row_quads.operator("cqp.process_mesh_op", text="Tris to Quads", icon='MOD_TRIANGULATE')
         op_quads.node_path = self.get_path(); op_quads.operation = 'QUADS'
 
