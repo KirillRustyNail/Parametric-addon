@@ -19,6 +19,8 @@ def shape_to_blender_mesh(shape: cq.Shape, mesh_name: str,
          return None
 
     try:
+
+        logger.debug(f"Tessellating shape '{mesh_name}' (type: {type(shape)}) with tol={tolerance}, ang={angular_tolerance}")
         # Используем tessellate для получения вершин и треугольников
         # Настройте точность по необходимости
         vertices, triangles = shape.tessellate(tolerance=tolerance, angularTolerance=angular_tolerance)
@@ -27,6 +29,8 @@ def shape_to_blender_mesh(shape: cq.Shape, mesh_name: str,
             logger.warning(f"Tessellation resulted in no vertices or triangles for mesh '{mesh_name}'. Shape might be 2D or invalid.")
             return None
 
+        logger.debug(f"  Tessellation resulted in {len(vertices)} vertices, {len(triangles)} triangles.")
+        
         # Создаем новый меш Blender
         mesh = bpy.data.meshes.new(mesh_name)
         # Заполняем меш данными
